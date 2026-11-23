@@ -23,6 +23,8 @@ import ch.awakened.app.domain.FitnessLevel
 import ch.awakened.app.domain.Goal
 import ch.awakened.app.domain.HunterTitle
 import ch.awakened.app.domain.Stat
+import ch.awakened.app.integrations.ReleaseInfo
+import ch.awakened.app.integrations.UpdateManager
 import ch.awakened.app.work.WorkScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -68,12 +70,60 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun toast(msg: String) { _toast.value = msg }
     fun consumeToast() { _toast.value = null }
 
+    // --------------------------------------------------------------- Update
+
+    sealed interface UpdateState {
+        data object Idle : UpdateState
+        data object Checking : UpdateState
+        data object UpToDate : UpdateState
+        data class Available(val release: ReleaseInfo) : UpdateState
+        data class Downloading(val release: ReleaseInfo, val progress: Float) : UpdateState
+        data class Ready(val release: ReleaseInfo, val file: java.io.File) : UpdateState
+        data class Failed(val message: String) : UpdateState
+    }
+
+    private val _update = MutableStateFlow<UpdateState>(UpdateState.Idle)
+    val update: StateFlow<UpdateState> = _update.asStateFlow()
+
+    fun checkForUpdate(silent: Boolean = false) = viewModelScope.launch {
+        if (_update.value is UpdateState.Downloading) return@launch
+        if (!silent) _update.value = UpdateState.Checking
+        runCatching { UpdateManager.fetchLatest() }
+            .onSuccess { r ->
+                if (UpdateManager.isNewer(r)) {
+                    _update.value = UpdateState.Available(r)
+                    if (silent) toast("[SYSTEM] Neue Version ${r.versionName} verfügbar – Einstellungen → Update")
+                } else if (!silent) _update.value = UpdateState.UpToDate
+            }
+            .onFailure { if (!silent) _update.value = UpdateState.Failed(it.message ?: "Keine Verbindung") }
+    }
+
+    fun downloadAndInstall(release: ReleaseInfo) = viewModelScope.launch {
+        _update.value = UpdateState.Downloading(release, 0f)
+        runCatching {
+            UpdateManager.download(getApplication(), release) { p -> _update.value = UpdateState.Downloading(release, p) }
+        }.onSuccess { file ->
+            _update.value = UpdateState.Ready(release, file)
+            installReady()
+        }.onFailure { _update.value = UpdateState.Failed(it.message ?: "Download fehlgeschlagen") }
+    }
+
+    /** Startet den Installer, sofern Android die Installation erlaubt. */
+    fun installReady(): Boolean {
+        val s = _update.value as? UpdateState.Ready ?: return false
+        if (!UpdateManager.canInstall(getApplication())) return false
+        runCatching { UpdateManager.install(getApplication(), s.file) }
+            .onFailure { _update.value = UpdateState.Failed(it.message ?: "Installation fehlgeschlagen") }
+        return true
+    }
+
     init {
         viewModelScope.launch {
             c.settings.settings.first()
             repo.profile.first()
             _ready.value = true
         }
+        checkForUpdate(silent = true)
         combine(repo.todayExercises, repo.weeklyClaims, repo.todayRecord) { _, _, _ -> }
             .onEach { refreshDerived() }
             .launchIn(viewModelScope)

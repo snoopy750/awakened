@@ -235,6 +235,8 @@ fun SettingsScreen(vm: MainViewModel, onBack: () -> Unit, onPermissions: () -> U
             SystemButton("Profil bearbeiten", { profileDialog = true }, Modifier.fillMaxWidth())
         }
 
+        UpdateSection(vm, tick)
+
         SystemWindow(title = "DATEN", icon = "⇅") {
             SystemText("Sichere alle Fortschritte als JSON-Datei, z. B. vor einem Handywechsel.", color = Sys.Muted)
             Spacer(Modifier.height(8.dp))
@@ -329,5 +331,64 @@ private fun SettingStepper(label: String, value: String, onMinus: () -> Unit, on
         SystemButton("−", onMinus, Modifier.width(48.dp), minHeight = 48.dp)
         Text(value, color = Sys.Cyan, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, modifier = Modifier.width(80.dp))
         SystemButton("+", onPlus, Modifier.width(48.dp), minHeight = 48.dp)
+    }
+}
+
+@Composable
+private fun UpdateSection(vm: MainViewModel, tick: Int) {
+    val context = LocalContext.current
+    val state by vm.update.collectAsStateWithLifecycle()
+    val canInstall = remember(tick) { ch.awakened.app.integrations.UpdateManager.canInstall(context) }
+    // Nach Rückkehr aus den Einstellungen („Unbekannte Apps“) automatisch installieren
+    LaunchedEffect(tick) { if (state is MainViewModel.UpdateState.Ready && canInstall) vm.installReady() }
+
+    SystemWindow(title = "UPDATE", icon = "↻") {
+        KeyValue("Installierte Version", ch.awakened.app.integrations.UpdateManager.installedVersion)
+        Spacer(Modifier.height(8.dp))
+        when (val s = state) {
+            MainViewModel.UpdateState.Idle -> SystemButton("Nach Updates suchen", { vm.checkForUpdate() }, Modifier.fillMaxWidth(), filled = true)
+            MainViewModel.UpdateState.Checking -> SystemText("Suche nach neuer Version …", color = Sys.Muted)
+            MainViewModel.UpdateState.UpToDate -> {
+                Text("✓ Du hast die neueste Version.", color = Sys.Green, style = MaterialTheme.typography.titleMedium)
+                Spacer(Modifier.height(8.dp))
+                SystemButton("Erneut prüfen", { vm.checkForUpdate() }, Modifier.fillMaxWidth())
+            }
+            is MainViewModel.UpdateState.Available -> {
+                Text("Neue Version ${s.release.versionName} verfügbar!", color = Sys.Gold, style = MaterialTheme.typography.titleMedium)
+                Spacer(Modifier.height(8.dp))
+                SystemButton("Herunterladen & installieren", { vm.downloadAndInstall(s.release) }, Modifier.fillMaxWidth(), filled = true, accent = Sys.Gold)
+                Spacer(Modifier.height(6.dp))
+                SystemText("Deine Daten bleiben beim Update erhalten.", color = Sys.Muted)
+            }
+            is MainViewModel.UpdateState.Downloading -> {
+                SystemText(
+                    if (s.progress >= 0) "Lade Version ${s.release.versionName} … ${(s.progress * 100).toInt()} %"
+                    else "Lade Version ${s.release.versionName} …",
+                )
+                Spacer(Modifier.height(6.dp))
+                ch.awakened.app.ui.components.GlowProgressBar(s.progress.coerceAtLeast(0f), color = Sys.Gold)
+            }
+            is MainViewModel.UpdateState.Ready -> {
+                if (!canInstall) {
+                    SystemText(
+                        "Einmalig nötig: Erlaube AWAKENED, Apps zu installieren. Danach startet die Installation automatisch.",
+                        color = Sys.Muted,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    SystemButton("Erlaubnis geben", {
+                        context.startActivity(ch.awakened.app.integrations.UpdateManager.installPermissionIntent(context))
+                    }, Modifier.fillMaxWidth(), filled = true, accent = Sys.Gold)
+                } else {
+                    SystemText("Version ${s.release.versionName} ist bereit.", color = Sys.Muted)
+                    Spacer(Modifier.height(8.dp))
+                    SystemButton("Jetzt installieren", { vm.installReady() }, Modifier.fillMaxWidth(), filled = true, accent = Sys.Gold)
+                }
+            }
+            is MainViewModel.UpdateState.Failed -> {
+                Text("Update fehlgeschlagen: ${s.message}", color = Sys.Red, style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.height(8.dp))
+                SystemButton("Nochmals versuchen", { vm.checkForUpdate() }, Modifier.fillMaxWidth())
+            }
+        }
     }
 }

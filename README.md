@@ -70,7 +70,9 @@ Wähle Apps wie Instagram, TikTok, YouTube oder Spiele (Knopf „Vorschläge“)
 - **Health Connect:** Einstellungen → Fitness-Tracker → Verbinden. Daten von Samsung Health, Google Fit, Garmin usw. fliessen automatisch ein.
 
 ### Updates
-Neue Version einfach wie oben herunterladen und über die alte installieren. Alle Daten bleiben erhalten (gleiche Signatur). Vor grossen Updates empfiehlt sich ein Backup: Einstellungen → Daten → Backup.
+In der App: **Einstellungen → Update → „Nach Updates suchen“ → „Herunterladen & installieren“.** Beim ersten Update fragt Android einmalig, ob AWAKENED Apps installieren darf. Die App meldet sich beim Start auch selbst, wenn eine neue Version verfügbar ist.
+
+Alternativ die neue Version wie oben herunterladen und über die alte installieren. Alle Daten bleiben erhalten (gleiche Signatur). Vor grossen Updates empfiehlt sich ein Backup: Einstellungen → Daten → Backup.
 
 ---
 
@@ -121,7 +123,7 @@ Benötigte XP für das nächste Level: `100 × Level^1.5` (Level 1 → 100, Leve
 ---
 
 ## Datenschutz
-Alle Daten bleiben auf dem Gerät. Die App hat keine Internet-Berechtigung, kein Tracking, keine Werbung und kein Konto. Der Nutzungszugriff wird nur genutzt, um den Paketnamen der geöffneten App zu erkennen; Bildschirminhalte werden nie gelesen.
+Alle Daten bleiben auf dem Gerät. Kein Tracking, keine Werbung, kein Konto. Internet wird nur für die Update-Prüfung genutzt: Die App fragt bei GitHub die neueste Version ab und lädt bei Bedarf die APK herunter; dabei werden keine persönlichen Daten gesendet. Der Nutzungszugriff wird nur genutzt, um den Paketnamen der geöffneten App zu erkennen; Bildschirminhalte werden nie gelesen.
 
 ---
 

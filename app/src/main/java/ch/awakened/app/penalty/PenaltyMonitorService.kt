@@ -141,6 +141,8 @@ class PenaltyMonitorService : Service() {
     private fun updateNotification(active: Boolean) {
         if (lastNotificationActive == active) return
         lastNotificationActive = active
+        if (!Permissions.hasNotifications(this)) return
+        @SuppressLint("MissingPermission")
         runCatching {
             NotificationManagerCompat.from(this).notify(Notifier.ID_MONITOR, Notifier.monitorNotification(this, active))
         }
