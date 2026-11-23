@@ -194,3 +194,4 @@ Das Spotify App Remote SDK braucht eine registrierte Client-ID samt Signatur-Fin
 ## Lizenzen
 - Schrift [Rajdhani](https://fonts.google.com/specimen/Rajdhani) © Indian Type Foundry, SIL Open Font License 1.1 (siehe [`licenses/Rajdhani-OFL.txt`](licenses/Rajdhani-OFL.txt))
 - App-Symbol, Sounds und Grafiken sind eigene Gestaltung.
+- Die Stimme 「起きろ」 im Level-up-Sound ist eine synthetische Sprachausgabe (ja-JP „Keita“) und nur für den privaten Gebrauch gedacht.
