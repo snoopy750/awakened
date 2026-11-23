@@ -2,7 +2,7 @@
 
 **Ein Fitness-RPG für Android im Stil eines „System“-Interfaces.** Tägliche Quests, XP, Level, Ränge von E bis S, Skills und eine PENALTY ZONE, die deine Ablenkungs-Apps sperrt, wenn du deine Daily Quest nicht erledigst.
 
-**[⬇ Neueste APK herunterladen](https://github.com/{{OWNER}}/awakened/releases/latest/download/awakened.apk)** · [Alle Versionen](https://github.com/{{OWNER}}/awakened/releases)
+**[⬇ Neueste APK herunterladen](https://github.com/snoopy750/awakened/releases/latest/download/awakened.apk)** · [Alle Versionen](https://github.com/snoopy750/awakened/releases)
 
 ---
 
@@ -29,7 +29,7 @@ Voraussetzung: Android 8.0 oder neuer.
 
 ### 1. APK herunterladen
 Öffne auf dem Handy diesen Link und lade `awakened.apk` herunter:
-**https://github.com/{{OWNER}}/awakened/releases/latest/download/awakened.apk**
+**https://github.com/snoopy750/awakened/releases/latest/download/awakened.apk**
 
 ### 2. „Unbekannte Quellen“ erlauben
 Android installiert Apps ausserhalb des Play Stores nur mit deiner Erlaubnis:
