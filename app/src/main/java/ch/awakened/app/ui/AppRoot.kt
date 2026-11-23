@@ -150,6 +150,7 @@ fun AppRoot(vm: MainViewModel, pendingRoute: String?, onRouteConsumed: () -> Uni
     SystemBackground {
         Scaffold(
             containerColor = Color.Transparent,
+            contentWindowInsets = WindowInsets(0),
             topBar = {
                 if (route in tabs.map { it.route }) {
                     TopBar(
