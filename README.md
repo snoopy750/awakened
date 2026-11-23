@@ -4,6 +4,8 @@
 
 **[⬇ Neueste APK herunterladen](https://github.com/snoopy750/awakened/releases/latest/download/awakened.apk)** · [Alle Versionen](https://github.com/snoopy750/awakened/releases)
 
+**iPhone:** **[AWAKENED als Web-App öffnen](https://snoopy750.github.io/awakened/)** (Anleitung [unten](#iphone-web-app))
+
 ---
 
 ## Funktionen
@@ -76,6 +78,32 @@ Alternativ die neue Version wie oben herunterladen und über die alte installier
 
 ---
 
+## iPhone (Web-App)
+
+Für iPhone gibt es AWAKENED als Web-App. Sie ist gratis und braucht weder App Store noch Apple-Konto.
+
+1. **[snoopy750.github.io/awakened](https://snoopy750.github.io/awakened/)** in **Safari** öffnen.
+2. Unten auf das **Teilen-Symbol** tippen (Quadrat mit Pfeil) → **Zum Home-Bildschirm** → **Hinzufügen**.
+3. AWAKENED ab jetzt immer über das neue Icon öffnen. Die App läuft dann im Vollbild und auch offline.
+
+> Wichtig: Safari-Tab und Home-Bildschirm-App haben getrennte Speicher. Das Profil also erst nach Schritt 2 im Icon anlegen.
+
+**Gleich wie auf Android:** Daily und Weekly Quests, Challenges, XP, Level-up mit Sound, Ränge, Stats, Skills, Titel, Training mit Timer und Spotify-Link, Statistik, Gewichtsverlauf, Backup als JSON-Datei.
+
+**Unterschiede, weil iOS das für Web-Apps nicht erlaubt:**
+
+| | iPhone (Web-App) |
+|---|---|
+| PENALTY ZONE | Sperrt AWAKENED selbst (nur noch Straf-Quest sichtbar), aber keine anderen Apps. Wer andere Apps sperren will, nutzt zusätzlich **Einstellungen → Bildschirmzeit → App-Limits**. |
+| Erinnerungen | Kommen nicht von der App. Lösung: in der **Kurzbefehle**-App eine Automation „Tageszeit“ mit „Mitteilung anzeigen“ anlegen. Die genaue Anleitung steht in der App unter Einstellungen. |
+| Apple Health, Vibration | Nicht verfügbar |
+
+**Updates:** Die Web-App aktualisiert sich selbst. Liegt eine neue Version bereit, erscheint unten ein Hinweis zum Antippen. In den Einstellungen gibt es zusätzlich „Nach Updates suchen“.
+
+Die Daten bleiben nur auf dem iPhone. Ab und zu unter Einstellungen → Daten eine Sicherung in iCloud Drive speichern.
+
+---
+
 ## Spielregeln
 
 ### XP
@@ -144,7 +172,16 @@ app/src/main/java/ch/awakened/app/
 ├── integrations/  Health Connect, Spotify, JSON-Backup
 ├── system/        Benachrichtigungen, Sound und Vibration
 └── ui/            Theme, System-Komponenten, Screens, ViewModels
+
+web/               iPhone-Web-App (ohne Build-Schritt, reines HTML/CSS/JavaScript)
+├── js/domain.js   Spiellogik, identisch mit domain/ der Android-App
+├── js/game.js     Spielzustand (localStorage), Quests, XP, Penalty-Auswertung
+├── js/app.js      Oberfläche, Training, Dialoge, Updates
+├── sw.js          Offline-Cache
+└── test/          Tests: node --test web/test/*.test.mjs
 ```
+
+Die Web-App wird bei jedem Push mit Änderungen in `web/` automatisch über GitHub Pages veröffentlicht (`.github/workflows/pages.yml`). Lokal testen: `python3 -m http.server -d web 8000`.
 
 ### Lokal bauen
 ```bash

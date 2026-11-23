@@ -1,0 +1,56 @@
+name: Web-App (iPhone) veröffentlichen
+
+on:
+  push:
+    branches: [main]
+    paths: ['web/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Tests
+        run: node --test web/test/*.test.mjs
+
+      - name: Seite zusammenstellen
+        run: |
+          mkdir _site
+          cp -r web/. _site/
+          rm -rf _site/test
+          BUILD="1.${GITHUB_RUN_NUMBER}"
+          sed -i "s/export const BUILD = 'dev';/export const BUILD = '${BUILD}';/" _site/js/version.js
+          sed -i "s/const VERSION = 'dev';/const VERSION = '${BUILD}';/" _site/sw.js
+          grep -q "$BUILD" _site/js/version.js && grep -q "$BUILD" _site/sw.js
+
+      - name: Pages konfigurieren
+        uses: actions/configure-pages@v5
+
+      - name: Hochladen
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4
