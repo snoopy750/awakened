@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <!-- Gate (Raute) mit Glow -->
+    <path android:strokeColor="#1E90FF" android:strokeWidth="5" android:strokeAlpha="0.35" android:strokeLineJoin="miter"
+        android:pathData="M54,24 L82,54 L54,84 L26,54 Z" />
+    <path android:strokeColor="#3DE8FF" android:strokeWidth="2.4" android:strokeLineJoin="miter"
+        android:pathData="M54,24 L82,54 L54,84 L26,54 Z" />
+    <path android:strokeColor="#3DE8FF" android:strokeWidth="1" android:strokeAlpha="0.6"
+        android:pathData="M54,31 L75.5,54 L54,77 L32.5,54 Z" />
+    <!-- erwachendes Auge -->
+    <path android:fillColor="#3DE8FF"
+        android:pathData="M37,54 Q54,41 71,54 Q54,67 37,54 Z" />
+    <path android:fillColor="#040915"
+        android:pathData="M54,45.5 Q57.2,54 54,62.5 Q50.8,54 54,45.5 Z" />
+    <path android:fillColor="#E6FBFF" android:pathData="M56.6,50.2 a1.4,1.4 0 1,0 0.01,0 Z" />
+    <!-- Eckmarken -->
+    <path android:strokeColor="#3DE8FF" android:strokeWidth="1.6" android:strokeAlpha="0.85"
+        android:pathData="M30,34 V30 H34 M78,34 V30 H74 M30,74 V78 H34 M78,74 V78 H74" />
+</vector>
