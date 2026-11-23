@@ -92,6 +92,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             repo.ensureDay()
             repo.evaluatePenalties()
             refreshDerived()
+            val st = c.settings.current()
+            if (st.monitorAlways || c.settings.currentPenalty().active) {
+                ch.awakened.app.penalty.PenaltyMonitorService.startIfPossible(getApplication())
+            }
             if (settings.filterNotNull().first().healthConnectEnabled) {
                 runCatching { health.syncToday(repo) }
             }

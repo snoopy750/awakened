@@ -6,7 +6,6 @@ import ch.awakened.app.data.prefs.PenaltyState
 import ch.awakened.app.data.repo.PenaltyHooks
 import ch.awakened.app.domain.DateUtil
 import ch.awakened.app.penalty.PenaltyMonitorService
-import ch.awakened.app.penalty.Permissions
 import ch.awakened.app.system.Notifier
 import ch.awakened.app.work.WorkScheduler
 
@@ -21,14 +20,11 @@ class AwakenedApp : Application() {
         container.repository.hooks = object : PenaltyHooks {
             override fun onPenaltyStarted(state: PenaltyState) {
                 Notifier.penaltyStarted(this@AwakenedApp, state)
-                if (!Permissions.isAccessibilityEnabled(this@AwakenedApp)) {
-                    PenaltyMonitorService.startIfPossible(this@AwakenedApp)
-                }
+                PenaltyMonitorService.startIfPossible(this@AwakenedApp)
             }
 
             override fun onPenaltyCleared(byQuest: Boolean) {
                 Notifier.penaltyCleared(this@AwakenedApp, byQuest)
-                PenaltyMonitorService.stop(this@AwakenedApp)
             }
 
             override fun onJokerUsed(day: Long) = Notifier.jokerUsed(this@AwakenedApp, DateUtil.format(day))

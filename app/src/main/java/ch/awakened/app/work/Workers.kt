@@ -13,7 +13,6 @@ import androidx.work.WorkerParameters
 import ch.awakened.app.container
 import ch.awakened.app.domain.DateUtil
 import ch.awakened.app.penalty.PenaltyMonitorService
-import ch.awakened.app.penalty.Permissions
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -28,8 +27,7 @@ class GameCheckWorker(appContext: Context, params: WorkerParameters) : Coroutine
         return try {
             c.repository.ensureDay()
             c.repository.evaluatePenalties()
-            val penalty = c.settings.currentPenalty()
-            if (penalty.active && !Permissions.isAccessibilityEnabled(applicationContext)) {
+            if (c.settings.currentPenalty().active || c.settings.current().monitorAlways) {
                 PenaltyMonitorService.startIfPossible(applicationContext)
             }
             if (c.settings.current().healthConnectEnabled) runCatching { c.health.syncToday(c.repository) }
@@ -84,10 +82,9 @@ class BootReceiver : BroadcastReceiver() {
         val pending = goAsync()
         Thread {
             try {
-                val penalty = kotlinx.coroutines.runBlocking { context.container.settings.currentPenalty() }
-                if (penalty.active && !Permissions.isAccessibilityEnabled(context)) {
-                    PenaltyMonitorService.startIfPossible(context)
-                }
+                val c = context.container
+                val needed = kotlinx.coroutines.runBlocking { c.settings.currentPenalty().active || c.settings.current().monitorAlways }
+                if (needed) PenaltyMonitorService.startIfPossible(context)
             } finally {
                 pending.finish()
             }

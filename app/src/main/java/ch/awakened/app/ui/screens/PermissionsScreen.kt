@@ -46,7 +46,6 @@ fun PermissionsScreen(vm: MainViewModel, introMode: Boolean, onBack: () -> Unit,
 
     // tick erzwingt das Neulesen nach Rückkehr aus den Systemeinstellungen
     val notif = remember(tick) { Permissions.hasNotifications(context) }
-    val access = remember(tick) { Permissions.isAccessibilityEnabled(context) }
     val overlay = remember(tick) { Permissions.canDrawOverlays(context) }
     val usage = remember(tick) { Permissions.hasUsageAccess(context) }
     val battery = remember(tick) { Permissions.ignoresBatteryOptimizations(context) }
@@ -72,37 +71,28 @@ fun PermissionsScreen(vm: MainViewModel, introMode: Boolean, onBack: () -> Unit,
         }
 
         PermissionCard(
-            "Bedienungshilfe (wichtigste)", access,
-            "Erkennt, welche App gerade geöffnet wird. Nur während der PENALTY ZONE wird eine gesperrte App durch den roten Sperrbildschirm ersetzt. " +
-                "Es werden keine Bildschirminhalte gelesen.\n\n" +
-                "So geht's: Bedienungshilfen → Installierte Apps (oder „Heruntergeladene Apps“) → AWAKENED Penalty Zone → Einschalten.\n\n" +
-                "Ist der Schalter ausgegraut („Eingeschränkte Einstellung“)? Dann zuerst unten „App-Info öffnen“ → oben rechts ⋮ → " +
-                "„Eingeschränkte Einstellungen zulassen“ und danach nochmals hier versuchen.",
-            "Bedienungshilfen öffnen",
-            secondaryLabel = "App-Info öffnen",
-            onSecondary = { context.startActivity(Permissions.appDetailsIntent(context)) },
-        ) { context.startActivity(Permissions.accessibilitySettingsIntent()) }
-
-        PermissionCard(
-            "Über anderen Apps einblenden", overlay,
-            "Erlaubt es, den Sperrbildschirm sofort über einer gesperrten App anzuzeigen.",
-            "Erlauben",
-        ) { context.startActivity(Permissions.overlaySettingsIntent(context)) }
-
-        PermissionCard(
-            "Nutzungszugriff (Fallback)", usage,
-            "Reserve-Methode, falls die Bedienungshilfe vom System beendet wurde: erkennt die Vordergrund-App über die Nutzungsstatistik.",
+            "Nutzungszugriff (wichtig)", usage,
+            "Erkennt, welche App gerade im Vordergrund ist. Nur so weiss das System während der PENALTY ZONE, " +
+                "wann eine gesperrte App geöffnet wird. Es werden keine Inhalte gelesen.\n\n" +
+                "So geht's: In der Liste AWAKENED antippen → „Nutzungszugriff erlauben“ einschalten.",
             "Erlauben",
         ) { context.startActivity(Permissions.usageSettingsIntent()) }
 
         PermissionCard(
+            "Über anderen Apps einblenden (wichtig)", overlay,
+            "Damit legt sich der rote PENALTY-ZONE-Bildschirm über eine gesperrte App.\n\n" +
+                "So geht's: AWAKENED antippen → „Über anderen Apps einblenden“ bzw. „Anzeige über anderen Apps“ erlauben.",
+            "Erlauben",
+        ) { context.startActivity(Permissions.overlaySettingsIntent(context)) }
+
+        PermissionCard(
             "Akku-Optimierung ausnehmen", battery,
-            "Verhindert, dass Android die Tagesprüfung und Erinnerungen verzögert oder stoppt. Empfohlen.",
+            "Verhindert, dass Android die Tagesprüfung und die Sperre stoppt. Bei Xiaomi, Samsung, Huawei usw. zusätzlich in der App-Info „Autostart“ erlauben und den Akkusparmodus auf „Keine Einschränkungen“ setzen.",
             "Ausnehmen",
         ) { runCatching { context.startActivity(Permissions.batterySettingsIntent(context)) } }
 
         SystemWindow {
-            val ready = access || (usage && overlay)
+            val ready = usage && overlay
             Row(verticalAlignment = Alignment.CenterVertically) {
                 StatusDot(ready)
                 Spacer(Modifier.width(10.dp))

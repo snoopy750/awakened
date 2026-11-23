@@ -37,6 +37,7 @@ data class AppSettings(
     val vibrationEnabled: Boolean = true,
     val remindersEnabled: Boolean = true,
     val healthConnectEnabled: Boolean = false,
+    val monitorAlways: Boolean = true,
 ) {
     val penaltyConfig: PenaltyConfig get() = PenaltyConfig(deadlineMinute, inactivityDays, lockHours)
     val cardio: CardioUnit get() = runCatching { CardioUnit.valueOf(cardioUnit) }.getOrDefault(CardioUnit.MINUTES)
@@ -85,6 +86,7 @@ class SettingsRepository(private val context: Context) {
         val vibrationEnabled = booleanPreferencesKey("vibration_enabled")
         val remindersEnabled = booleanPreferencesKey("reminders_enabled")
         val healthConnectEnabled = booleanPreferencesKey("health_connect_enabled")
+        val monitorAlways = booleanPreferencesKey("monitor_always")
 
         val pActive = booleanPreferencesKey("penalty_active")
         val pReason = stringPreferencesKey("penalty_reason")
@@ -124,6 +126,7 @@ class SettingsRepository(private val context: Context) {
             vibrationEnabled = p[K.vibrationEnabled] ?: d.vibrationEnabled,
             remindersEnabled = p[K.remindersEnabled] ?: d.remindersEnabled,
             healthConnectEnabled = p[K.healthConnectEnabled] ?: d.healthConnectEnabled,
+            monitorAlways = p[K.monitorAlways] ?: d.monitorAlways,
         )
     }
 
@@ -174,6 +177,7 @@ class SettingsRepository(private val context: Context) {
             p[K.vibrationEnabled] = s.vibrationEnabled
             p[K.remindersEnabled] = s.remindersEnabled
             p[K.healthConnectEnabled] = s.healthConnectEnabled
+            p[K.monitorAlways] = s.monitorAlways
         }
     }
 
@@ -194,6 +198,7 @@ class SettingsRepository(private val context: Context) {
             vibrationEnabled = p[K.vibrationEnabled] ?: d.vibrationEnabled,
             remindersEnabled = p[K.remindersEnabled] ?: d.remindersEnabled,
             healthConnectEnabled = p[K.healthConnectEnabled] ?: d.healthConnectEnabled,
+            monitorAlways = p[K.monitorAlways] ?: d.monitorAlways,
         )
     }
 

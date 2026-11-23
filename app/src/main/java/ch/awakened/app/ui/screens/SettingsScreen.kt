@@ -106,6 +106,14 @@ fun SettingsScreen(vm: MainViewModel, onBack: () -> Unit, onPermissions: () -> U
             SystemSwitchRow("Penalty Zone aktiv", "Sperrt gewählte Apps bei verpasster Daily Quest oder Inaktivität.", s.penaltyEnabled) { v ->
                 vm.updateSettings { it.copy(penaltyEnabled = v) }
             }
+            SystemSwitchRow(
+                "Dauerhafte Überwachung",
+                "Hält das System mit einer stillen Benachrichtigung aktiv. So greifen Deadline und Sperre zuverlässig, auch wenn Android Hintergrundaufgaben verzögert.",
+                s.monitorAlways,
+            ) { v ->
+                vm.updateSettings { it.copy(monitorAlways = v) }
+                if (v) ch.awakened.app.penalty.PenaltyMonitorService.startIfPossible(context)
+            }
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 6.dp)) {
                 Column(Modifier.weight(1f)) {
                     Text("Deadline Daily Quest", color = Sys.Text, style = MaterialTheme.typography.titleMedium)

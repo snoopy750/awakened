@@ -39,6 +39,7 @@ Android installiert Apps ausserhalb des Play Stores nur mit deiner Erlaubnis:
 3. Aktiviere **„Dieser Quelle vertrauen“** bzw. **„Apps aus dieser Quelle zulassen“**.
 4. Zurück und auf **Installieren** tippen.
 5. Falls Google Play Protect warnt („Unbekannte App“): **Weitere Details → Trotzdem installieren**.
+6. Xiaomi/HyperOS: Fragt der eigene Sicherheits-Scanner nach, **„Trotzdem installieren“** wählen.
 
 > Samsung: Einstellungen → Apps → ⋮ → Spezieller Zugriff → Unbekannte Apps installieren → Browser bzw. „Eigene Dateien“ erlauben.
 
@@ -51,14 +52,15 @@ Die App führt dich durch jede Berechtigung und erklärt, wofür sie gebraucht w
 | Berechtigung | Wozu | Wo |
 |---|---|---|
 | **Benachrichtigungen** | Erinnerungen („Die Daily Quest ist noch nicht abgeschlossen. Verbleibende Zeit: 3h“) | Dialog beim Start |
-| **Bedienungshilfe** (wichtigste) | Erkennt, welche App geöffnet wird, und zeigt während der PENALTY ZONE den Sperrbildschirm. Liest keine Inhalte. | Einstellungen → Bedienungshilfen → Installierte Apps → **AWAKENED Penalty Zone** |
-| **Über anderen Apps einblenden** | Sperrbildschirm sofort anzeigen | Wird von der App geöffnet |
-| **Nutzungszugriff** | Reserve, falls die Bedienungshilfe beendet wurde | Wird von der App geöffnet |
-| **Akku-Optimierung ausnehmen** | Damit die Tagesprüfung zuverlässig läuft | Wird von der App geöffnet |
+| **Nutzungszugriff** (wichtig) | Erkennt, welche App im Vordergrund ist. Liest keine Inhalte. | Liste → **AWAKENED** → „Nutzungszugriff erlauben“ |
+| **Über anderen Apps einblenden** (wichtig) | Legt den roten PENALTY-ZONE-Bildschirm über gesperrte Apps | **AWAKENED** → erlauben |
+| **Akku-Optimierung ausnehmen** | Damit Tagesprüfung und Sperre nicht gestoppt werden | Dialog der App |
 
-> **Wichtig ab Android 13 – „Eingeschränkte Einstellung“:**
-> Bei Apps ausserhalb des Play Stores ist der Schalter der Bedienungshilfe zuerst ausgegraut. Lösung:
-> **Einstellungen → Apps → AWAKENED → ⋮ (oben rechts) → „Eingeschränkte Einstellungen zulassen“** und danach die Bedienungshilfe einschalten. In der App gibt es dafür den Knopf „App-Info öffnen“.
+Die App öffnet die richtige Einstellungsseite jeweils selbst.
+
+> **Xiaomi, Samsung, Huawei, OnePlus:** Diese Hersteller beenden Hintergrund-Apps besonders aggressiv. Zusätzlich unter **Einstellungen → Apps → AWAKENED** den **Autostart** erlauben und den **Akkusparmodus auf „Keine Einschränkungen“** stellen.
+
+AWAKENED zeigt eine stille Benachrichtigung „[SYSTEM] aktiv“. Sie hält die Überwachung zuverlässig am Laufen. Du kannst sie unter Einstellungen → „Dauerhafte Überwachung“ abschalten; dann läuft die Überwachung nur während der PENALTY ZONE, die Prüfung der Deadline kann sich aber verzögern.
 
 ### 5. Apps für die Sperre wählen
 Wähle Apps wie Instagram, TikTok, YouTube oder Spiele (Knopf „Vorschläge“). **Telefon, SMS, Karten, Banking/TWINT, Einstellungen und AWAKENED selbst werden nie gesperrt.**
@@ -114,12 +116,12 @@ Benötigte XP für das nächste Level: `100 × Level^1.5` (Level 1 → 100, Leve
 - **Auslöser:** Daily Quest nicht bis zur Deadline erledigt (einstellbar, Standard 23:59) oder X Tage ohne Aktivität (einstellbar, Standard 3, 0 = aus). Der Tag der Profilerstellung zählt nicht.
 - **Folge:** Die gewählten Apps zeigen beim Öffnen einen roten Vollbild-Sperrbildschirm.
 - **Entsperren:** Straf-Quest erfüllen (z. B. 50 Burpees + 20 min Ausdauer, abhängig vom Fitnesslevel) oder Ablauf der Sperrzeit (einstellbar, Standard 12 h).
-- Die Prüfung läuft im Hintergrund alle 15 Minuten, direkt nach der Deadline und überlebt einen Neustart.
+- Die Prüfung läuft im Überwachungsdienst jede Minute, zusätzlich per WorkManager alle 15 Minuten und direkt nach der Deadline. Alles startet nach einem Neustart automatisch wieder.
 
 ---
 
 ## Datenschutz
-Alle Daten bleiben auf dem Gerät. Die App hat keine Internet-Berechtigung, kein Tracking, keine Werbung und kein Konto. Die Bedienungshilfe wertet nur den Paketnamen der geöffneten App aus, keine Bildschirminhalte.
+Alle Daten bleiben auf dem Gerät. Die App hat keine Internet-Berechtigung, kein Tracking, keine Werbung und kein Konto. Der Nutzungszugriff wird nur genutzt, um den Paketnamen der geöffneten App zu erkennen; Bildschirminhalte werden nie gelesen.
 
 ---
 
@@ -135,7 +137,7 @@ app/src/main/java/ch/awakened/app/
 ├── data/db/       Room-Entities und DAOs
 ├── data/prefs/    DataStore: Einstellungen, Penalty-Zustand, Meta
 ├── data/repo/     GameRepository: Quests, XP, Weekly, Challenges, Training, Penalty-Auswertung
-├── penalty/       AccessibilityService, UsageStats-Fallback, Sperrbildschirm, Berechtigungen
+├── penalty/       Überwachungsdienst (UsageStats + Overlay), Sperrbildschirm, Berechtigungen
 ├── work/          WorkManager-Prüfung, Deadline-Job, BootReceiver
 ├── integrations/  Health Connect, Spotify, JSON-Backup
 ├── system/        Benachrichtigungen, Sound und Vibration

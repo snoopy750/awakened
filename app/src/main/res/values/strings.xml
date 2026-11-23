@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AWAKENED</string>
-    <string name="accessibility_description">AWAKENED nutzt diese Bedienungshilfe ausschliesslich, um zu erkennen, welche App gerade geöffnet wird. Ist die PENALTY ZONE aktiv und öffnest du eine von dir gewählte App (z. B. Instagram oder ein Spiel), wird stattdessen der Sperrbildschirm angezeigt. Es werden keine Inhalte gelesen, gespeichert oder übertragen. Telefon, SMS, Karten und Banking werden nie gesperrt.</string>
-    <string name="accessibility_summary">Sperrt gewählte Apps während der PENALTY ZONE.</string>
-    <string name="monitor_fgs_subtype">Überwacht während einer vom Nutzer selbst eingerichteten Sperre (Penalty Zone), ob gesperrte Apps geöffnet werden.</string>
+    <string name="monitor_fgs_subtype">Prüft die vom Nutzer gesetzte Deadline seiner Fitness-Quests und blendet während einer selbst eingerichteten Sperre (Penalty Zone) einen Sperrbildschirm über gewählte Apps ein.</string>
 </resources>

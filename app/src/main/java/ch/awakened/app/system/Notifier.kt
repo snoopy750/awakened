@@ -47,8 +47,8 @@ object Notifier {
                 NotificationChannel(CH_SYSTEM, "System-Meldungen", NotificationManager.IMPORTANCE_DEFAULT).apply {
                     description = "Level-ups, Skills und Joker."
                 },
-                NotificationChannel(CH_MONITOR, "Sperr-Überwachung", NotificationManager.IMPORTANCE_LOW).apply {
-                    description = "Läuft nur, solange die Penalty Zone aktiv ist."
+                NotificationChannel(CH_MONITOR, "System-Überwachung", NotificationManager.IMPORTANCE_LOW).apply {
+                    description = "Hält die Deadline-Prüfung und die Penalty Zone zuverlässig am Laufen."
                 },
             ),
         )
@@ -141,13 +141,18 @@ object Notifier {
         )
     }
 
-    fun monitorNotification(context: Context) =
+    fun monitorNotification(context: Context, penaltyActive: Boolean) =
         NotificationCompat.Builder(context, CH_MONITOR)
             .setSmallIcon(R.drawable.ic_stat_system)
-            .setColor(RED)
-            .setContentTitle("PENALTY ZONE aktiv")
-            .setContentText("Gesperrte Apps werden überwacht, bis die Straf-Quest erfüllt ist.")
+            .setColor(if (penaltyActive) RED else CYAN)
+            .setContentTitle(if (penaltyActive) "PENALTY ZONE aktiv" else "[SYSTEM] aktiv")
+            .setContentText(
+                if (penaltyActive) "Gesperrte Apps werden blockiert, bis die Straf-Quest erfüllt ist."
+                else "Das System überwacht deine Daily Quest.",
+            )
             .setOngoing(true)
-            .setContentIntent(openApp(context, "penalty"))
+            .setSilent(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setContentIntent(openApp(context, if (penaltyActive) "penalty" else null))
             .build()
 }

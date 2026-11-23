@@ -478,7 +478,7 @@ class GameRepository(
 
     /**
      * Prüft Deadline, verpasste Tage, Inaktivität und automatisches Entsperren.
-     * Wird vom Worker, vom AccessibilityService und beim Öffnen der App aufgerufen.
+     * Wird vom Worker, vom Überwachungsdienst und beim Öffnen der App aufgerufen.
      */
     suspend fun evaluatePenalties(nowMillis: Long = System.currentTimeMillis()) = mutex.withLock {
         val profile = db.profileDao().get() ?: return@withLock
