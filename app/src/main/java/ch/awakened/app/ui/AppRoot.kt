@@ -327,6 +327,7 @@ fun LevelUpOverlay(e: GameEvent.LevelUp, onDismiss: () -> Unit) {
     val alpha = remember { Animatable(0f) }
     LaunchedEffect(e) {
         alpha.animateTo(1f, tween(250))
+        delay(620) // auf den Einschlag im Level-up-Sound abgestimmt
         scale.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow))
     }
     val t = rememberInfiniteTransition(label = "rays")
